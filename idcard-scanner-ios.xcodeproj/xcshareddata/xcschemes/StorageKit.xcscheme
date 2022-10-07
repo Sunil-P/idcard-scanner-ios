@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6B4A1E1B28F07D7800A495BD"
-               BuildableName = "FrontendApplication.app"
-               BlueprintName = "FrontendApplication"
+               BlueprintIdentifier = "6B78267828F084A000A009D2"
+               BuildableName = "StorageKit.framework"
+               BlueprintName = "StorageKit"
                ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,36 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6B12273628F0821F00A00A6D"
-               BuildableName = "FrontendApplicationUnitTests.xctest"
-               BlueprintName = "FrontendApplicationUnitTests"
-               ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6B4A1E3B28F07D7C00A495BD"
-               BuildableName = "FrontendApplicationUITests.xctest"
-               BlueprintName = "FrontendApplicationUITests"
-               ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6B78265F28F0844500A009D2"
-               BuildableName = "FrontendAppKitTests.xctest"
-               BlueprintName = "FrontendAppKitTests"
-               ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -80,16 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6B4A1E1B28F07D7800A495BD"
-            BuildableName = "FrontendApplication.app"
-            BlueprintName = "FrontendApplication"
-            ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -97,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6B4A1E1B28F07D7800A495BD"
-            BuildableName = "FrontendApplication.app"
-            BlueprintName = "FrontendApplication"
+            BlueprintIdentifier = "6B78267828F084A000A009D2"
+            BuildableName = "StorageKit.framework"
+            BlueprintName = "StorageKit"
             ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
