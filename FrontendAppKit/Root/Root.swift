@@ -5,6 +5,6 @@
 //  Created by Subhrajyoti Patra on 10/7/22.
 //
 
-struct Root {
+public struct Root {
 
 } // Root

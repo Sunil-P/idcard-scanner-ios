@@ -4,8 +4,14 @@
 
 .DS_Store
 
+## Pod Files
+Podfile.lock
+Pods/
+
 ## User settings
 xcuserdata/
+xcshareddata/
+*.xcworkspace/
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
