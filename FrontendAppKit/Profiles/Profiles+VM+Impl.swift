@@ -1,5 +1,5 @@
 //
-//  Root+VM+Impl.swift
+//  Profiles+VM+Impl.swift
 //  FrontendAppKit
 //
 //  Created by Subhrajyoti Patra on 10/7/22.
@@ -7,7 +7,7 @@
 
 import Swinject
 
-extension Root.VM {
+extension Profiles.VM {
 
     public struct Factory {
 
@@ -33,9 +33,22 @@ extension Root.VM {
 
         init(with resolver: Resolver) {
 
+            self.resolver = resolver
+            self.model = Model.Factory.create(with: resolver)
+
             print("Class init")
         }
 
+        var addNewProfileVM: AddNewProfile.VM.Interface {
+
+            AddNewProfile.VM.Factory.create(with: resolver, model: model)
+        }
+
+        // MARK: - Privates:
+
+        private let resolver: Resolver
+        private let model: Model.Interface
+
     } // Impl
 
-} // Root.VM
+} // Profiles.VM

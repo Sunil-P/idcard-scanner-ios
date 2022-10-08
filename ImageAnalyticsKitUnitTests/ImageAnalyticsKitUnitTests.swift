@@ -1,14 +1,14 @@
 //
-//  StorageKitUnitTests.swift
-//  StorageKitUnitTests
+//  ImageAnalyticsKitUnitTests.swift
+//  ImageAnalyticsKitUnitTests
 //
-//  Created by Subhrajyoti Patra on 10/7/22.
+//  Created by Subhrajyoti Patra on 10/8/22.
 //
 
 import XCTest
-@testable import StorageKit
+@testable import ImageAnalyticsKit
 
-class FrontendAppKitUnitTests: XCTestCase {
+class ImageAnalyticsKitUnitTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -33,4 +33,4 @@ class FrontendAppKitUnitTests: XCTestCase {
         }
     }
 
-} // FrontendAppKitUnitTests
+}

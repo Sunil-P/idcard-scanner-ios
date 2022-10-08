@@ -8,6 +8,9 @@ target 'FrontendAppKit' do
   
   # Pods for FrontendAppKit
   pod 'Swinject'
+  pod 'RxSwift'
+  pod 'RxRelay'
+  pod 'RxCocoa'
 
   target 'FrontendAppKitTests' do
     # Pods for testing
@@ -30,26 +33,29 @@ target 'FrontendApplication' do
 
 end
 
-target 'StorageKit' do
+target 'ImageAnalyticsKit' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   platform :ios, '15.5'
 
-  # Pods for StorageKit
+  # Pods for CommonKit
   pod 'Swinject'
+  pod 'RxSwift'
+  pod 'RxRelay'
 
-  target 'StorageKitTests' do
+  target 'ImageAnalyticsKitUnitTests' do
+    inherit! :search_paths
     # Pods for testing
   end
 
 end
 
-  target 'CommonKit' do
+target 'CommonKit' do
     # Comment the next line if you don't want to use dynamic frameworks
     use_frameworks!
     platform :ios, '15.5'
   
-    # Pods for StorageKit
+    # Pods for CommonKit
     pod 'Swinject'
 
 end

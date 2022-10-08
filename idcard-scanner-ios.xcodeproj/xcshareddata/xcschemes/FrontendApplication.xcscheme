@@ -68,6 +68,16 @@
                ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6B20998A28F1D771009B2484"
+               BuildableName = "ImageAnalyticsKitUnitTests.xctest"
+               BlueprintName = "ImageAnalyticsKitUnitTests"
+               ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

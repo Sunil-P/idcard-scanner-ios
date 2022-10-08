@@ -7,6 +7,7 @@
 
 import CommonKit
 import FrontendAppKit
+import ImageAnalyticsKit
 
 import Swinject
 
@@ -16,7 +17,9 @@ struct AppContext {
 
         let container = Container.default.container
 
-        Root.VM.Factory.register(with: container)
+        Profiles.Factory.register(with: container)
+        ImageAnalytics.VisionManager.Factory.register(with: container)
+
     }
 
 } // AppContext
