@@ -23,6 +23,8 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
 
         super.viewDidLoad()
 
+        print("AddNewProfile.VC loaded.")
+
         profilePicPicker.sourceType = .photoLibrary
         profilePicPicker.delegate = self
 

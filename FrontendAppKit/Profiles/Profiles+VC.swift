@@ -26,6 +26,8 @@ class Profiles_VC: UIViewController {
 
         super.viewDidLoad()
 
+        print("Profiles.VC loaded.")
+
         viewModel.profiles.drive(tableView.rx.items(cellIdentifier: "cell")) { row, person, cell in
 
             var content = cell.defaultContentConfiguration()

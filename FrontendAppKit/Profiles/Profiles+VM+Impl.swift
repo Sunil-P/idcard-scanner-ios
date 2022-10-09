@@ -37,7 +37,12 @@ extension Profiles.VM {
             self.resolver = resolver
             self.model = Model.Factory.create(with: resolver)
 
-            print("Class init")
+            print("Profiles.VM initialized.")
+        }
+
+        deinit {
+
+            print("Profiles.VM deinitialized.")
         }
 
         // MARK: Interface

@@ -36,8 +36,15 @@ extension Model {
 
         init(with resolver: Resolver) {
 
+            print("Model initialized.")
+
             self.profilesRelay = BehaviorRelay(value: [:])
             self.visionManager = ImageAnalytics.VisionManager.Factory.create(with: resolver)
+        }
+
+        deinit {
+
+            print("Model deinitalized.")
         }
 
         // MARK: - Interface:

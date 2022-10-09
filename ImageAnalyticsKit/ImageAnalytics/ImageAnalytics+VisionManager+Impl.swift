@@ -78,6 +78,8 @@ extension ImageAnalytics.VisionManager {
 
             .create { [weak self] single in
 
+                print("Processing image of type='\(type)'...")
+
                 // Convert from UIImageOrientation to CGImagePropertyOrientation.
                 let cgOrientation = CGImagePropertyOrientation(image.imageOrientation)
 
@@ -192,6 +194,8 @@ extension ImageAnalytics.VisionManager {
 
         ) {
 
+            print("Performing vision request...")
+
             // Fetch desired requests based on switch status.
             let requests = createVisionRequests(requestType: requestType)
             // Create a request handler.
@@ -231,4 +235,5 @@ extension ImageAnalytics.VisionManager {
         }
 
     } // VisionManager
-}
+
+} // ImageAnalytics.VisionManager

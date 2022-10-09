@@ -44,12 +44,6 @@ extension AddNewProfile.VM {
                 activityInProgress: BehaviorSubject<Bool>(value: false)
             )
 
-            relay.profilePic.subscribe(onNext: { _ in
-
-                print("Relay val changed.")
-            })
-            .disposed(by: disposeBag)
-
             print("AddNewProfile.VM initialized.")
         }
 
@@ -90,6 +84,8 @@ extension AddNewProfile.VM {
 
             .create { [weak self] completable in
 
+                print("Selecting Image with type='\(type)'...")
+
                 guard let this = self else {
 
                     completable(.error(AddNewProfile.Error.genericError))
@@ -112,11 +108,14 @@ extension AddNewProfile.VM {
                         }
 
                         self?.parsedTextCache = result.1
-                        print("Completed.")
+
+                        print("Successfully selected image.")
 
                         completable(.completed)
 
                     }, onError: { error in
+
+                        print("Error in selected image (error=\(error.localizedDescription).'")
 
                         completable(.error(error))
 
@@ -145,6 +144,8 @@ extension AddNewProfile.VM {
 
             .create { [weak self] completable in
 
+                print("Saving profile...")
+
                 guard !email.isEmpty, let profilePic = profilePic, let cardImage = cardImage else {
 
                     completable(.error(AddNewProfile.Error.missingDetails))
@@ -169,9 +170,13 @@ extension AddNewProfile.VM {
                 .delay(.seconds(1), scheduler: this.scheduler)
                 .do(onError: { error in
 
+                    print("Error in saving profile, error='\(error.localizedDescription)'.")
+
                     completable(.error(error))
 
                 }, onCompleted: {
+
+                    print("Sucessfully saved profile.")
 
                     completable(.completed)
 

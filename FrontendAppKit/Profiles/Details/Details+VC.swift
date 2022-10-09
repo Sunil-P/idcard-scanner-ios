@@ -15,6 +15,8 @@ class Details_VC: UIViewController {
 
         super.viewDidLoad()
 
+        print("Details.VC loaded.")
+
         if let profile = profile {
 
             self.idCardImageView.image = profile.cardImage
