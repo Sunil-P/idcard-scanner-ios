@@ -96,13 +96,7 @@ extension AddNewProfile.VM {
                     return Disposables.create {}
                 }
 
-                guard let model = this.model else {
-
-                    completable(.error(AddNewProfile.Error.modelNotInitalized))
-                    return Disposables.create { }
-                }
-
-                model.process(image: image, type: type)
+                self?.model.process(image: image, type: type)
 
                     .do(onSuccess: { [weak self] result in
 
@@ -163,13 +157,7 @@ extension AddNewProfile.VM {
                     return Disposables.create {}
                 }
 
-                guard let model = this.model else {
-
-                    completable(.error(AddNewProfile.Error.modelNotInitalized))
-                    return Disposables.create {}
-                }
-
-                model.saveProfile(profile: .init(
+                self?.model.saveProfile(profile: .init(
 
                     id: UUID(),
                     email: email,
@@ -208,7 +196,7 @@ extension AddNewProfile.VM {
         private let disposeBag = DisposeBag()
         private let defaultImage = (
 
-            profilePic: UIImage(systemName: "person.crop.circle.fill.badge.plus")!,
+            profilePic: UIImage(systemName: "person.crop.circle")!,
             idCardImg: UIImage(systemName: "person.text.rectangle")!
         )
 
@@ -219,8 +207,8 @@ extension AddNewProfile.VM {
             activityInProgress: BehaviorSubject<Bool>
         )
 
-        private weak var model: Model.Interface?
         private var parsedTextCache = ""
+        private unowned var model: Model.Interface
 
     } // Impl
 

@@ -5,10 +5,10 @@
 //  Created by Subhrajyoti Patra on 10/8/22.
 //
 
-import UIKit
+import ImageAnalyticsKit
 
 import RxSwift
-import ImageAnalyticsKit
+import UIKit
 
 protocol Model_Data: AnyObject {
 
@@ -44,7 +44,6 @@ struct Model {
         var errorDescription: String? {
 
             switch self {
-
             case .cannotCreateProfileExists: return "Cannot create new profile, profile already exists."
             }
         }

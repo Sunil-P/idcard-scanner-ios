@@ -1,21 +1,23 @@
 //
 //  Model+Mock.swift
-//  FrontendAppKit
+//  FrontendAppKitUnitTests
 //
 //  Created by Subhrajyoti Patra on 10/9/22.
 //
 
 import CommonKit
 
-import UIKit
-import RxSwift
+@testable import FrontendAppKit
+
 import RxRelay
+import RxSwift
 import RxTest
 import Swinject
+import UIKit
 
 extension Model {
 
-    public class Mock: Interface {
+    final class Mock: Interface {
 
         enum Calls: Equatable {
 

@@ -72,6 +72,32 @@ final class VisionManager_Tests: XCTestCase {
         _ = createManager()
     }
 
+    func testErrorLocalization() {
+
+        typealias Error = VisionManager.VisionError
+
+        XCTAssertEqual(
+
+            Error.genericVisionError.localizedDescription,
+            "Generic error occured."
+        )
+        XCTAssertEqual(
+
+            Error.notAnIdCard.localizedDescription,
+            "Selected image is not an id card. Please try again."
+        )
+        XCTAssertEqual(
+
+            Error.multipleFaces.localizedDescription,
+            "Selected image has multiple faces. Please try again."
+        )
+        XCTAssertEqual(
+
+            Error.noFaces.localizedDescription,
+            "Selected image has no faces. Please try again."
+        )
+    }
+
     func testprofilePic_invalid() {
 
         let manager = createManager()

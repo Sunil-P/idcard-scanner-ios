@@ -41,6 +41,8 @@ class Profiles_VC: UIViewController {
             self?.performSegue(withIdentifier: "showProfileSegue", sender: person)
         })
         .disposed(by: disposeBag)
+
+        viewModel.profiles.map { !$0.isEmpty }.drive(profileLabel.rx.isHidden).disposed(by: disposeBag)
     }
 
     // MARK: - IBActions:
@@ -52,6 +54,7 @@ class Profiles_VC: UIViewController {
     // MARK: - IBOutlets:
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var profileLabel: UILabel!
 
     // MARK: - Overrides:
 

@@ -12,6 +12,7 @@ class Details_VC: UIViewController {
     var profile: Model.Profile?
 
     override func viewDidLoad() {
+
         super.viewDidLoad()
 
         if let profile = profile {

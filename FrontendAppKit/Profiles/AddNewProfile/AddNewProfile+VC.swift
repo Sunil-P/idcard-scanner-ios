@@ -28,8 +28,9 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
 
         idCardImgPicker.sourceType = .photoLibrary
         idCardImgPicker.delegate = self
-
         emailTextField.delegate = self
+
+        self.rightBarButtonItem = navigationItem.rightBarButtonItem
 
         viewModel?.profilePicImg
 
@@ -49,7 +50,11 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
 
         viewModel?.isActivityInProgress
 
-            .drive(onNext: { [weak self] inProgress in
+            .drive(onNext: { [weak self, rightBarButtonItem] inProgress in
+
+                self?.view.alpha = inProgress ? 0.5 : 1
+                self?.navigationItem.hidesBackButton = inProgress
+                self?.navigationItem.rightBarButtonItem = inProgress ? nil : rightBarButtonItem
 
                 self?.loadingIndicatorView.isHidden = !inProgress
             })
@@ -69,8 +74,7 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
     @IBOutlet weak var idCardImageView: UIImageView!
     @IBOutlet weak var profilePictureImageView: UIImageView!
     @IBOutlet weak var loadingIndicatorView: UIView!
-    @IBOutlet weak var loadingIndicatorBgView: UIView!
-
+    
     // MARK: - IBActions:
 
     @IBAction func doneButtonAction(_ sender: UIBarButtonItem) {
@@ -89,31 +93,24 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
 
         }, onError: {  [weak self] error in
 
-            let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-
-            alert.addAction(.init(title: "OK", style: .default))
-            self?.present(alert, animated: true, completion: nil)
+            self?.presentErrorAlert(message: error.localizedDescription)
         })
         .disposed(by: disposeBag)
     }
 
     @IBAction func profilePictureButtonAction(_ sender: UIButton) {
 
+        emailTextField.endEditing(true)
         self.present(profilePicPicker, animated: true)
     }
 
     @IBAction func addIdentityCardButtonAction(_ sender: UIButton) {
 
+        emailTextField.endEditing(true)
         self.present(idCardImgPicker, animated: true)
     }
 
     // MARK: UITextFieldDelegate
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-
-        self.view.endEditing(true)
-        return false
-    }
 
     // MARK: UIImagePickerControllerDelegate
 
@@ -130,32 +127,18 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
     ) {
 
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-
-        var imageType = Model.ImageType.profilePic
-
-        if picker == profilePicPicker {
-
-            imageType = .profilePic
-
-        } else if picker == idCardImgPicker {
-
-            imageType = .idCard
-        }
+        let imageType = picker == profilePicPicker ? Model.ImageType.profilePic : .idCard
 
         viewModel?.selectImage(image: image, type: imageType)
 
             .observe(on: MainScheduler.instance)
             .do(onError: { [weak self] error in
 
-                let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-
-                alert.addAction(.init(title: "OK", style: .default))
-                self?.present(alert, animated: true, completion: nil)
+                self?.presentErrorAlert(message: error.localizedDescription)
 
             }, onSubscribe: { [weak self] in
 
                 self?.dismiss(animated: true, completion: nil)
-
             })
             .subscribe()
             .disposed(by: disposeBag)
@@ -168,5 +151,20 @@ class AddNewProfile_VC: UIViewController, UIImagePickerControllerDelegate, UINav
     private let disposeBag = DisposeBag()
     private let profilePicPicker = UIImagePickerController()
     private let idCardImgPicker = UIImagePickerController()
+
+    private var rightBarButtonItem: UIBarButtonItem?
+
+    private func presentErrorAlert(message: String) {
+
+        let alert = UIAlertController(
+
+            title: "Error",
+            message: message,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(.init(title: "OK", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
 
 } // AddNewProfile_VC

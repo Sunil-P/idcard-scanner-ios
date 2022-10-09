@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,14 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Profiles Added. Add one to see !" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MWd-if-vZg">
-                                <rect key="frame" x="72" y="438" width="270" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="F18-B7-T4I">
-                                <rect key="frame" x="0.0" y="140" width="414" height="722"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="6vH-MB-4te">
@@ -36,6 +31,12 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Profiles Added. Add one to see !" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MWd-if-vZg">
+                                <rect key="frame" x="72" y="438" width="270" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -58,6 +59,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="profileLabel" destination="MWd-if-vZg" id="UM1-2z-6XT"/>
                         <outlet property="tableView" destination="F18-B7-T4I" id="DLb-7J-Wnh"/>
                         <segue destination="5Rw-9m-fNK" kind="show" identifier="showProfileSegue" id="ta8-oj-7yV"/>
                     </connections>
@@ -151,14 +153,10 @@
                                 </constraints>
                             </stackView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kI-ds-4X4" userLabel="LoadingIndicator">
-                                <rect key="frame" x="0.0" y="140" width="414" height="722"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HD1-UA-iAs" userLabel="LoadingIndicatorBgView">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="722"/>
-                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M1D-0U-c8q" userLabel="LoadingIndicatorPanel">
-                                        <rect key="frame" x="107" y="261" width="200" height="200"/>
+                                        <rect key="frame" x="107" y="348" width="200" height="200"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please wait..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCC-K7-JrS">
                                                 <rect key="frame" x="43" y="50" width="114" height="24"/>
@@ -174,7 +172,7 @@
                                                 </constraints>
                                             </activityIndicatorView>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="backgroundColor" name="panelBgColor"/>
                                         <constraints>
                                             <constraint firstItem="cCC-K7-JrS" firstAttribute="centerX" secondItem="M1D-0U-c8q" secondAttribute="centerX" id="0Ch-DS-E7l"/>
                                             <constraint firstItem="tcW-Sb-xuX" firstAttribute="top" secondItem="cCC-K7-JrS" secondAttribute="top" constant="40" id="Ou9-HQ-MAt"/>
@@ -191,25 +189,21 @@
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="HD1-UA-iAs" firstAttribute="top" secondItem="3kI-ds-4X4" secondAttribute="top" id="Ahb-2q-xWb"/>
                                     <constraint firstItem="M1D-0U-c8q" firstAttribute="centerY" secondItem="3kI-ds-4X4" secondAttribute="centerY" id="Lbz-c3-6Dh"/>
                                     <constraint firstItem="M1D-0U-c8q" firstAttribute="centerX" secondItem="3kI-ds-4X4" secondAttribute="centerX" id="Mf3-iH-s8F"/>
-                                    <constraint firstItem="HD1-UA-iAs" firstAttribute="leading" secondItem="3kI-ds-4X4" secondAttribute="leading" id="he8-Bm-PBV"/>
-                                    <constraint firstAttribute="trailing" secondItem="HD1-UA-iAs" secondAttribute="trailing" id="kNO-EE-nKL"/>
-                                    <constraint firstAttribute="bottom" secondItem="HD1-UA-iAs" secondAttribute="bottom" id="v5I-Vz-y1v"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="IWD-d1-HXf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="3kI-ds-4X4" firstAttribute="top" secondItem="IWD-d1-HXf" secondAttribute="top" id="09d-HS-ouX"/>
-                            <constraint firstItem="3kI-ds-4X4" firstAttribute="leading" secondItem="IWD-d1-HXf" secondAttribute="leading" id="7u5-J2-YtG"/>
+                            <constraint firstItem="3kI-ds-4X4" firstAttribute="top" secondItem="0VM-d2-rTa" secondAttribute="top" id="09d-HS-ouX"/>
+                            <constraint firstItem="3kI-ds-4X4" firstAttribute="leading" secondItem="0VM-d2-rTa" secondAttribute="leading" id="7u5-J2-YtG"/>
                             <constraint firstItem="Gu2-Do-h0c" firstAttribute="top" secondItem="IWD-d1-HXf" secondAttribute="top" constant="20" id="GGf-T1-Tz4"/>
                             <constraint firstItem="IWD-d1-HXf" firstAttribute="trailing" secondItem="Gu2-Do-h0c" secondAttribute="trailing" constant="16" id="IqJ-36-7Mz"/>
                             <constraint firstItem="Gu2-Do-h0c" firstAttribute="leading" secondItem="IWD-d1-HXf" secondAttribute="leading" constant="16" id="WTX-Qj-lAn"/>
-                            <constraint firstItem="3kI-ds-4X4" firstAttribute="trailing" secondItem="IWD-d1-HXf" secondAttribute="trailing" id="kO6-ML-Rby"/>
-                            <constraint firstItem="3kI-ds-4X4" firstAttribute="bottom" secondItem="IWD-d1-HXf" secondAttribute="bottom" id="xtJ-h4-xIp"/>
+                            <constraint firstItem="3kI-ds-4X4" firstAttribute="trailing" secondItem="0VM-d2-rTa" secondAttribute="trailing" id="kO6-ML-Rby"/>
+                            <constraint firstItem="3kI-ds-4X4" firstAttribute="bottom" secondItem="0VM-d2-rTa" secondAttribute="bottom" id="xtJ-h4-xIp"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Add a new profile" id="AqL-Yo-JiR">
@@ -223,7 +217,6 @@
                         <outlet property="emailTextField" destination="X79-QK-qbn" id="sdX-3p-dWr"/>
                         <outlet property="idCardImageView" destination="uT1-b1-Gx8" id="oJr-sK-EhC"/>
                         <outlet property="idCardImgButton" destination="DQZ-Oa-wc6" id="AR0-Jv-LD5"/>
-                        <outlet property="loadingIndicatorBgView" destination="HD1-UA-iAs" id="Gcf-xC-xEt"/>
                         <outlet property="loadingIndicatorView" destination="3kI-ds-4X4" id="ycH-pd-Cm2"/>
                         <outlet property="profilePictureButton" destination="wAF-dR-syd" id="PgN-3F-pF6"/>
                         <outlet property="profilePictureImageView" destination="c22-Gb-yiJ" id="pWa-LT-sjM"/>
@@ -233,7 +226,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="u3x-kM-0h4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="QFa-OA-mgP" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1235" y="-518"/>
+            <point key="canvasLocation" x="1234.7826086956522" y="-518.30357142857144"/>
         </scene>
         <!--DetailsVC-->
         <scene sceneID="iH6-au-Wks">
@@ -244,10 +237,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="VPf-ud-IaD" userLabel="MainStack">
-                                <rect key="frame" x="0.0" y="140" width="414" height="150"/>
+                                <rect key="frame" x="20" y="140" width="374" height="150"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="VGl-6H-HH8" userLabel="PictureStack">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="150"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="okX-0X-54Q" userLabel="ProfileImageView">
                                                 <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
@@ -256,7 +249,7 @@
                                                 </constraints>
                                             </imageView>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="C7b-Fq-Eps" userLabel="idCardImageView">
-                                                <rect key="frame" x="160" y="0.0" width="254" height="150"/>
+                                                <rect key="frame" x="160" y="0.0" width="214" height="150"/>
                                             </imageView>
                                         </subviews>
                                     </stackView>
@@ -266,7 +259,7 @@
                                 </constraints>
                             </stackView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6zY-sB-nIm">
-                                <rect key="frame" x="0.0" y="388.5" width="414" height="473.5"/>
+                                <rect key="frame" x="20" y="388.5" width="374" height="473.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="473.5" id="im6-SD-e4E"/>
@@ -280,11 +273,11 @@
                         <viewLayoutGuide key="safeArea" id="iex-UK-jqM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="VPf-ud-IaD" firstAttribute="trailing" secondItem="iex-UK-jqM" secondAttribute="trailing" id="FI0-Ar-TyO"/>
-                            <constraint firstItem="6zY-sB-nIm" firstAttribute="trailing" secondItem="iex-UK-jqM" secondAttribute="trailing" id="KZl-Ul-Kaf"/>
-                            <constraint firstItem="VPf-ud-IaD" firstAttribute="leading" secondItem="iex-UK-jqM" secondAttribute="leading" id="XN3-q1-aQt"/>
+                            <constraint firstItem="VPf-ud-IaD" firstAttribute="trailing" secondItem="iex-UK-jqM" secondAttribute="trailing" constant="-20" id="FI0-Ar-TyO"/>
+                            <constraint firstItem="6zY-sB-nIm" firstAttribute="trailing" secondItem="iex-UK-jqM" secondAttribute="trailing" constant="-20" id="KZl-Ul-Kaf"/>
+                            <constraint firstItem="VPf-ud-IaD" firstAttribute="leading" secondItem="iex-UK-jqM" secondAttribute="leading" constant="20" id="XN3-q1-aQt"/>
                             <constraint firstItem="iex-UK-jqM" firstAttribute="bottom" secondItem="6zY-sB-nIm" secondAttribute="bottom" id="c1p-NT-tDd"/>
-                            <constraint firstItem="6zY-sB-nIm" firstAttribute="leading" secondItem="iex-UK-jqM" secondAttribute="leading" id="jac-eK-FfI"/>
+                            <constraint firstItem="6zY-sB-nIm" firstAttribute="leading" secondItem="iex-UK-jqM" secondAttribute="leading" constant="20" id="jac-eK-FfI"/>
                             <constraint firstItem="VPf-ud-IaD" firstAttribute="top" secondItem="iex-UK-jqM" secondAttribute="top" id="ljk-aF-4H4"/>
                         </constraints>
                     </view>
@@ -320,6 +313,9 @@
     </scenes>
     <resources>
         <image name="plus.circle" catalog="system" width="128" height="121"/>
+        <namedColor name="panelBgColor">
+            <color red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

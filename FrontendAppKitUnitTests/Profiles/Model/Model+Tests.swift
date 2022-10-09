@@ -6,8 +6,8 @@
 //
 
 @testable import FrontendAppKit
-
-@testable import ImageAnalyticsKit
+@testable import ImageAnalyticsMocks
+import ImageAnalyticsKit
 import CommonKit
 
 import Nimble
@@ -69,6 +69,17 @@ final class Model_Tests: XCTestCase {
     func testFactory() {
 
         _ = createModel()
+    }
+
+    func testErrorLocalization() {
+
+        typealias Error = Model.Error
+
+        XCTAssertEqual(
+
+            Error.cannotCreateProfileExists.localizedDescription,
+            "Cannot create new profile, profile already exists."
+        )
     }
 
     func testSaveProfile() {

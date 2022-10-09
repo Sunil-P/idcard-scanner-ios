@@ -5,16 +5,16 @@
 //  Created by Subhrajyoti Patra on 10/9/22.
 //
 
-@testable import FrontendAppKit
-
 import CommonKit
+@testable import FrontendAppKit
+import ImageAnalyticsKit
 
 import Nimble
-import XCTest
 import RxSwift
-import Swinject
 import RxTest
+import Swinject
 import UIKit
+import XCTest
 
 final class AddNewProfile_VM_Tests: XCTestCase {
 
@@ -72,14 +72,46 @@ final class AddNewProfile_VM_Tests: XCTestCase {
         _ = createViewModel()
     }
 
+    func testErrorLocalization() {
+
+        typealias Error = AddNewProfile.Error
+
+        XCTAssertEqual(
+
+            Error.genericError.localizedDescription,
+            "Generic error occured."
+        )
+        XCTAssertEqual(
+
+            Error.modelNotInitalized.localizedDescription,
+            "Model not initialized."
+        )
+        XCTAssertEqual(
+
+            Error.missingDetails.localizedDescription,
+            "Missing details in setting up profile."
+        )
+        XCTAssertEqual(
+
+            Error.visionReturnedInvalidId.localizedDescription,
+            "Cannot use selected picture as id card. Please select another one."
+        )
+        XCTAssertEqual(
+
+            Error.visionReturnedInvalidFace.localizedDescription,
+            "Cannot detect face in selected pic. Please select another one."
+        )
+    }
+
     func testSelectImage() {
 
         typealias ModelError = Model.Error
+        typealias VisionError = ImageAnalytics.VisionManager.VisionError
 
         var viewModel: VM.Interface! = createViewModel()
 
         let bundle = Bundle(for: Model_Tests.self)
-        let defaultProfilePic = UIImage(systemName: "person.crop.circle.fill.badge.plus")!
+        let defaultProfilePic = UIImage(systemName: "person.crop.circle")!
         let defaultIdCardImg = UIImage(systemName: "person.text.rectangle")!
         let testImage = UIImage(named: "testImg", in: bundle, with: nil)!
 
@@ -147,7 +179,70 @@ final class AddNewProfile_VM_Tests: XCTestCase {
                 disposable?.dispose()
                 disposable = nil
             }
-            mock.testScheduler.scheduleAt(99) {
+            mock.testScheduler.scheduleAt(60) {
+
+                self.mock.modelMock.m_result.process = self.mock.testScheduler.createColdObservable([
+
+                    .error(5, VisionError.notAnIdCard),
+                ])
+            }
+            mock.testScheduler.scheduleAt(70) {
+
+                disposable = viewModel.selectImage(image: testImage, type: .idCard)
+
+                    .asObservable()
+                    .subscribe(observer.selectImageObserver)
+
+                disposable?.disposed(by: self.mock.disposeBag)
+            }
+            mock.testScheduler.scheduleAt(80) {
+
+                disposable?.dispose()
+                disposable = nil
+            }
+            mock.testScheduler.scheduleAt(90) {
+
+                self.mock.modelMock.m_result.process = self.mock.testScheduler.createColdObservable([
+
+                    .error(5, VisionError.noFaces),
+                ])
+            }
+            mock.testScheduler.scheduleAt(100) {
+
+                disposable = viewModel.selectImage(image: testImage, type: .profilePic)
+
+                    .asObservable()
+                    .subscribe(observer.selectImageObserver)
+
+                disposable?.disposed(by: self.mock.disposeBag)
+            }
+            mock.testScheduler.scheduleAt(110) {
+
+                disposable?.dispose()
+                disposable = nil
+            }
+            mock.testScheduler.scheduleAt(120) {
+
+                self.mock.modelMock.m_result.process = self.mock.testScheduler.createColdObservable([
+
+                    .error(5, VisionError.multipleFaces),
+                ])
+            }
+            mock.testScheduler.scheduleAt(130) {
+
+                disposable = viewModel.selectImage(image: testImage, type: .profilePic)
+
+                    .asObservable()
+                    .subscribe(observer.selectImageObserver)
+
+                disposable?.disposed(by: self.mock.disposeBag)
+            }
+            mock.testScheduler.scheduleAt(140) {
+
+                disposable?.dispose()
+                disposable = nil
+            }
+            mock.testScheduler.scheduleAt(999) {
 
                 viewModel = nil
             }
@@ -159,6 +254,9 @@ final class AddNewProfile_VM_Tests: XCTestCase {
 
             .next(10, .process(image: testImage, type: .idCard)),
             .next(40, .process(image: testImage, type: .profilePic)),
+            .next(70, .process(image: testImage, type: .idCard)),
+            .next(100, .process(image: testImage, type: .profilePic)),
+            .next(130, .process(image: testImage, type: .profilePic)),
         ]
         expect(observer.activityObserver.events) == [
 
@@ -167,6 +265,12 @@ final class AddNewProfile_VM_Tests: XCTestCase {
             .next(10 + 5, false),
             .next(40, true),
             .next(40 + 5, false),
+            .next(70, true),
+            .next(70 + 5, false),
+            .next(100, true),
+            .next(100 + 5, false),
+            .next(130, true),
+            .next(130 + 5, false),
         ]
         expect(observer.idCardObserver.events) == [
 
@@ -182,6 +286,9 @@ final class AddNewProfile_VM_Tests: XCTestCase {
 
             .completed(10 + 5),
             .completed(40 + 5),
+            .error(70 + 5, VisionError.notAnIdCard),
+            .error(100 + 5, VisionError.noFaces),
+            .error(130 + 5, VisionError.multipleFaces),
         ]
     }
 
