@@ -26,7 +26,39 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6BFCBC4628F0A30800E60F2B"
+            BuildableName = "CommonKit.framework"
+            BlueprintName = "CommonKit"
+            ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6B78265828F0844400A009D2"
+            BuildableName = "FrontendAppKit.framework"
+            BlueprintName = "FrontendAppKit"
+            ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6B20998328F1D770009B2484"
+            BuildableName = "ImageAnalyticsKit.framework"
+            BlueprintName = "ImageAnalyticsKit"
+            ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6BCCADD028F33FFC001663DD"
+            BuildableName = "ImageAnalyticsMocks.framework"
+            BlueprintName = "ImageAnalyticsMocks"
+            ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "YES">
@@ -39,7 +71,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6B78265F28F0844500A009D2"
@@ -49,7 +81,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6B20998A28F1D771009B2484"
