@@ -8,6 +8,7 @@
 import CommonKit
 
 import Swinject
+import RxSwift
 import UIKit
 
 class Profiles_VC: UIViewController {
@@ -24,22 +25,55 @@ class Profiles_VC: UIViewController {
     public override func viewDidLoad() {
 
         super.viewDidLoad()
+
+        viewModel.profiles.drive(tableView.rx.items(cellIdentifier: "cell")) { row, person, cell in
+
+            var content = cell.defaultContentConfiguration()
+
+            content.text = person.email
+
+            cell.contentConfiguration = content
+
+        }.disposed(by: disposeBag)
+
+        tableView.rx.modelSelected(Model.Profile.self).subscribe(onNext: { [weak self] person in
+
+            self?.performSegue(withIdentifier: "showProfileSegue", sender: person)
+        })
+        .disposed(by: disposeBag)
     }
+
+    // MARK: - IBActions:
+
+    @IBAction func unwind( _ seg: UIStoryboardSegue) {
+
+    }
+
+    // MARK: - IBOutlets:
+
+    @IBOutlet weak var tableView: UITableView!
 
     // MARK: - Overrides:
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-        guard let addNewProfileVC = segue.destination as? AddNewProfile_VC else {
+        if let addNewProfileVC = segue.destination as? AddNewProfile_VC {
 
-            return
+            addNewProfileVC.setViewModel(viewModel: viewModel.addNewProfileVM)
         }
 
-        addNewProfileVC.setViewModel(viewModel: viewModel.addNewProfileVM)
+        if segue.identifier == "showProfileSegue" {
+
+            let profileVC = segue.destination as! Details_VC
+            let profile = sender as! Model.Profile
+
+            profileVC.setObject(profile: profile)
+        }
     }
 
     // MARK: - Privates:
 
     private let viewModel: Profiles.VM.Interface
+    private let disposeBag = DisposeBag()
 
 } // Profiles_VC

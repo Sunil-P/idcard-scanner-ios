@@ -8,25 +8,37 @@
 import UIKit
 
 import RxSwift
+import ImageAnalyticsKit
 
 protocol Model_Data: AnyObject {
 
     var profiles: Observable<[Model.Profile]> { get }
 
-    func parseIdCard(image: UIImage) -> Single<UIImage>
+    func process(image: UIImage, type: Model.ImageType) -> Single<(UIImage, String)>
 
     func saveProfile(profile: Model.Profile) -> Completable
-
-    func deleteProfile(id: UUID) -> Completable
 }
 
 struct Model {
 
     typealias Interface = Model_Data
 
+    enum ImageType {
+
+        case profilePic
+        case idCard
+
+        var imageAnalyticsType: ImageAnalytics.VisionManager.ImageType {
+
+            switch self {
+            case .profilePic: return .profilePicture
+            case .idCard: return .idCard
+            }
+        }
+    }
+
     enum Error: LocalizedError {
 
-        case cannotDeleteProfileDoesntExist
         case cannotCreateProfileExists
 
         var errorDescription: String? {
@@ -34,7 +46,6 @@ struct Model {
             switch self {
 
             case .cannotCreateProfileExists: return "Cannot create new profile, profile already exists."
-            case .cannotDeleteProfileDoesntExist: return "Cannot delete profile, profile doesnt exist."
             }
         }
     }

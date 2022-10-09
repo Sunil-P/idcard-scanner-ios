@@ -17,13 +17,10 @@ protocol AddNewProfile_VM_Interface {
     var idCardImg: Driver<UIImage> { get }
     var isActivityInProgress: Driver<Bool> { get }
 
-    func selectProfilePic(image: UIImage) -> Completable
-
-    func selectIdCardImg(image: UIImage) -> Completable
+    func selectImage(image: UIImage, type: Model.ImageType) -> Completable
 
     func save(
 
-        name: String,
         email: String,
         profilePic: UIImage?,
         cardImage: UIImage?

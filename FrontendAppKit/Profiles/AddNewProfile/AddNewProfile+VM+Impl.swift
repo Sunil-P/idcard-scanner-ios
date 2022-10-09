@@ -13,11 +13,11 @@ extension AddNewProfile.VM {
 
     public struct Factory {
 
-        public static func register(with container: Container) {
+        public static func register(with container: Container, scheduler: SchedulerType?) {
 
             container.register(Interface.self) { (_, model: Model.Interface) in
 
-                Impl(with: model)
+                Impl(with: model, scheduler: scheduler ?? MainScheduler.instance)
             }
             .inObjectScope(.transient)
         }
@@ -33,8 +33,9 @@ extension AddNewProfile.VM {
 
     private final class Impl: Interface {
 
-        init(with model: Model.Interface) {
+        init(with model: Model.Interface, scheduler: SchedulerType) {
 
+            self.scheduler = scheduler
             self.model = model
             self.relay = (
 
@@ -80,18 +81,12 @@ extension AddNewProfile.VM {
                 .asDriver(onErrorDriveWith: .never())
         }
 
-        func selectProfilePic(image: UIImage) -> Completable {
+        func selectImage(
 
-            .create { [weak self] completable in
+            image: UIImage,
+            type: Model.ImageType
 
-                self?.relay.profilePic.onNext(image)
-
-                completable(.completed)
-                return Disposables.create { }
-            }
-        }
-
-        func selectIdCardImg(image: UIImage) -> Completable {
+        ) -> Completable {
 
             .create { [weak self] completable in
 
@@ -107,13 +102,25 @@ extension AddNewProfile.VM {
                     return Disposables.create { }
                 }
 
-                model.parseIdCard(image: image)
+                model.process(image: image, type: type)
 
-                    .do(onSuccess: { [weak self] processedImage in
+                    .do(onSuccess: { [weak self] result in
 
+                        switch type {
+
+                        case .idCard:
+
+                            self?.relay.idCardImg.onNext(result.0)
+
+                        case .profilePic:
+
+                            self?.relay.profilePic.onNext(result.0)
+                        }
+
+                        self?.parsedTextCache = result.1
                         print("Completed.")
+
                         completable(.completed)
-                        self?.relay.idCardImg.onNext(processedImage)
 
                     }, onError: { error in
 
@@ -136,7 +143,6 @@ extension AddNewProfile.VM {
 
         func save(
 
-            name: String,
             email: String,
             profilePic: UIImage?,
             cardImage: UIImage?
@@ -145,7 +151,7 @@ extension AddNewProfile.VM {
 
             .create { [weak self] completable in
 
-                guard !name.isEmpty, !email.isEmpty, let profilePic = profilePic, let cardImage = cardImage else {
+                guard !email.isEmpty, let profilePic = profilePic, let cardImage = cardImage else {
 
                     completable(.error(AddNewProfile.Error.missingDetails))
                     return Disposables.create {}
@@ -165,16 +171,31 @@ extension AddNewProfile.VM {
 
                 model.saveProfile(profile: .init(
 
-                    id: UUID(), name: name, email: email, cardImage: cardImage, profilePic: profilePic
+                    id: UUID(),
+                    email: email,
+                    cardImage: cardImage,
+                    profilePic: profilePic,
+                    parsedText: this.parsedTextCache
                 ))
-                .subscribe(onCompleted: {
+                // For better looking UX.
+                .delay(.seconds(1), scheduler: this.scheduler)
+                .do(onError: { error in
+
+                    completable(.error(error))
+
+                }, onCompleted: {
 
                     completable(.completed)
 
-                }, onError: { error in
+                }, onSubscribe: {
 
-                    completable(.error(error))
+                    self?.relay.activityInProgress.onNext(true)
+
+                }, onDispose: {
+
+                    self?.relay.activityInProgress.onNext(false)
                 })
+                .subscribe()
                 .disposed(by: this.disposeBag)
 
                 return Disposables.create {}
@@ -183,6 +204,7 @@ extension AddNewProfile.VM {
 
         // MARK: - Privates
 
+        private let scheduler: SchedulerType
         private let disposeBag = DisposeBag()
         private let defaultImage = (
 
@@ -198,6 +220,7 @@ extension AddNewProfile.VM {
         )
 
         private weak var model: Model.Interface?
+        private var parsedTextCache = ""
 
     } // Impl
 

@@ -7,6 +7,7 @@
 
 import CommonKit
 
+import Dispatch
 import UIKit
 import RxSwift
 import Swinject
@@ -33,11 +34,13 @@ extension ImageAnalytics.VisionManager {
 
     public struct Factory {
 
-        public static func register(with container: Container) {
+        public static func register(with container: Container, dispatchQueue: DispatchQueueType? = nil) {
 
             container.register(Interface.self) { _ in
 
-                Impl()
+                let dispatchQueue = dispatchQueue ?? DispatchQueue.main
+
+                return Impl(dispatchQueue: dispatchQueue)
             }
             .inObjectScope(.transient)
         }
@@ -53,8 +56,9 @@ extension ImageAnalytics.VisionManager {
 
     public class Impl: Interface {
 
-        init() {
+        init(dispatchQueue: DispatchQueueType) {
 
+            self.dispatchQueue = dispatchQueue
             print("VisionManager initialized.")
         }
 
@@ -65,16 +69,12 @@ extension ImageAnalytics.VisionManager {
 
         // MARK: - Interface:
 
-        public func processPicture(image: UIImage) -> Single<UIImage> {
+        public func process(
 
-            .create { single in
+            image: UIImage,
+            type: ImageAnalytics.VisionManager.ImageType
 
-                single(.success(.init(named: "person.icloud.fill")!))
-                return Disposables.create {}
-            }
-        }
-
-        public func processIdCard(image: UIImage) -> Single<(UIImage, String)> {
+        ) -> Single<(UIImage, String)> {
 
             .create { [weak self] single in
 
@@ -90,23 +90,42 @@ extension ImageAnalytics.VisionManager {
 
                 // TODO: Aspect/Perspective correction for image ?
 
-                self?.idCardImageRequestClosure = { parsedText in
+                switch type {
 
-                    if parsedText.isEmpty {
+                case .profilePicture: {
 
-                        single(.failure(VisionError.notAnIdCard))
+                    self?.profilePictureRequestClosure = { detectedFaces in
 
-                    } else {
+                        switch detectedFaces {
 
-                        single(.success((image, parsedText)))
+                        case let x where x <= 0: single(.failure(VisionError.noFaces))
+                        case 1: single(.success((image, "")))
+                        case let x where x > 0: single(.failure(VisionError.multipleFaces))
+                        default: single(.failure(VisionError.genericVisionError))
+                        }
                     }
+                }()
+                case .idCard: {
+
+                    self?.idCardImageRequestClosure = { parsedText in
+
+                        if parsedText.isEmpty {
+
+                            single(.failure(VisionError.notAnIdCard))
+
+                        } else {
+
+                            single(.success((image, parsedText)))
+                        }
+                    }
+                }()
                 }
 
                 self?.performVisionRequest(
 
                     image: cgImage,
-                    orientation: cgOrientation ,
-                    requestType: .idCard
+                    orientation: cgOrientation,
+                    requestType: type
                 )
 
                 return Disposables.create { }
@@ -115,112 +134,34 @@ extension ImageAnalytics.VisionManager {
 
         // MARK: - Privates:
 
+        private let dispatchQueue: DispatchQueueType
+
         private var idCardImageRequestClosure: ((String)->())?
-        private var idCardImageRectRequestClosure: ((CGRect)->())?
-
-        private enum VisionRequestType {
-
-            case idCard
-            case profilePicture
-        }
+        private var profilePictureRequestClosure: ((Int)->())?
 
         private lazy var textRecognizeRequest = VNRecognizeTextRequest(
 
             completionHandler: self.handleDetectedRecognizedText
         )
-        private lazy var textDetectionRequest = { () -> VNDetectTextRectanglesRequest in
-
-            let request = VNDetectTextRectanglesRequest(completionHandler: self.handleDetectedText)
-            request.reportCharacterBoxes = true
-            return request
-        }()
-        private lazy var rectangleDetectionRequest = { () -> VNDetectRectanglesRequest in
-
-            let request = VNDetectRectanglesRequest(
-
-                completionHandler: self.handleDetectedRectangles
-            )
-            request.maximumObservations = 1 // Vision currently supports up to 16.
-            request.minimumConfidence = 0.8 // Be confident.
-            request.minimumAspectRatio = 0.3 // height / width
-
-            return request
-        }()
         private lazy var faceDetectionRequest = VNDetectFaceRectanglesRequest(
 
             completionHandler: self.handleDetectedFaces
         )
-        private lazy var faceLandmarkRequest = VNDetectFaceLandmarksRequest(
 
-            completionHandler: self.handleDetectedFaceLandmarks
-        )
-
-        fileprivate func handleDetectedRectangles(request: VNRequest?, error: Error?) {
+        private func handleDetectedFaces(request: VNRequest?, error: Error?) {
 
             if let _ = error as NSError? {
                 return
             }
 
-            guard let results = request?.results as? [VNRectangleObservation] else {
+            guard let results = request?.results as? [VNFaceObservation] else {
                 return
             }
 
-            guard let firstResult = results.first else {
-                return
-            }
-
-            idCardImageRectRequestClosure?(firstResult.boundingBox)
+            profilePictureRequestClosure?(results.count)
         }
 
-        fileprivate func handleDetectedFaces(request: VNRequest?, error: Error?) {
-            if let nsError = error as NSError? {
-    //            self.presentAlert("Face Detection Error", error: nsError)
-    //            return
-            }
-            // Perform drawing on the main thread.
-            DispatchQueue.main.async {
-    //            guard let drawLayer = self.pathLayer,
-    //                let results = request?.results as? [VNFaceObservation] else {
-    //                    return
-    //            }
-    //            self.draw(faces: results, onImageWithBounds: drawLayer.bounds)
-    //            drawLayer.setNeedsDisplay()
-            }
-        }
-
-        fileprivate func handleDetectedFaceLandmarks(request: VNRequest?, error: Error?) {
-            if let nsError = error as NSError? {
-    //            self.presentAlert("Face Landmark Detection Error", error: nsError)
-                return
-            }
-            // Perform drawing on the main thread.
-            DispatchQueue.main.async {
-    //            guard let drawLayer = self.pathLayer,
-    //                let results = request?.results as? [VNFaceObservation] else {
-    //                    return
-    //            }
-    //            self.drawFeatures(onFaces: results, onImageWithBounds: drawLayer.bounds)
-    //            drawLayer.setNeedsDisplay()
-            }
-        }
-
-        fileprivate func handleDetectedText(request: VNRequest?, error: Error?) {
-            if let nsError = error as NSError? {
-    //            self.presentAlert("Text Detection Error", error: nsError)
-                return
-            }
-            // Perform drawing on the main thread.
-            DispatchQueue.main.async {
-    //            guard let drawLayer = self.pathLayer,
-    //                let results = request?.results as? [VNTextObservation] else {
-    //                    return
-    //            }
-    //            self.draw(text: results, onImageWithBounds: drawLayer.bounds)
-    //            drawLayer.setNeedsDisplay()
-            }
-        }
-
-        fileprivate func handleDetectedRecognizedText(request: VNRequest?, error: Error?) {
+        private func handleDetectedRecognizedText(request: VNRequest?, error: Error?) {
 
             if let nsError = error as NSError? {
 
@@ -243,7 +184,13 @@ extension ImageAnalytics.VisionManager {
         }
 
         /// - Tag: PerformRequests
-        private func performVisionRequest(image: CGImage, orientation: CGImagePropertyOrientation, requestType: VisionRequestType) {
+        private func performVisionRequest(
+
+            image: CGImage,
+            orientation: CGImagePropertyOrientation,
+            requestType: ImageType
+
+        ) {
 
             // Fetch desired requests based on switch status.
             let requests = createVisionRequests(requestType: requestType)
@@ -252,7 +199,7 @@ extension ImageAnalytics.VisionManager {
                                                             orientation: orientation,
                                                             options: [:])
             // Send the requests to the request handler.
-            DispatchQueue.global(qos: .userInitiated).async {
+                dispatchQueue.async {
                 do {
                     try imageRequestHandler.perform(requests)
                 } catch let error as NSError {
@@ -263,7 +210,7 @@ extension ImageAnalytics.VisionManager {
         }
 
         /// - Tag: CreateRequests
-        private func createVisionRequests(requestType: VisionRequestType) -> [VNRequest] {
+        private func createVisionRequests(requestType: ImageType) -> [VNRequest] {
 
             // Create an array to collect all desired requests.
             var requests: [VNRequest] = []
@@ -272,14 +219,11 @@ extension ImageAnalytics.VisionManager {
 
             case .idCard:
 
-                requests.append(self.rectangleDetectionRequest)
-                requests.append(self.textDetectionRequest)
                 requests.append(self.textRecognizeRequest)
 
             case .profilePicture:
 
                 requests.append(self.faceDetectionRequest)
-                requests.append(self.faceLandmarkRequest)
             }
 
             // Return grouped requests as a single array.

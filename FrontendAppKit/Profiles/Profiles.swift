@@ -18,7 +18,7 @@ public struct Profiles {
             VM.Factory.register(with: container)
             Model.Factory.register(with: container)
 
-            AddNewProfile.VM.Factory.register(with: container)
+            AddNewProfile.VM.Factory.register(with: container, scheduler: nil)
         }
 
     } // Factory

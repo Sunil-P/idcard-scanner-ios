@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6B78265F28F0844500A009D2"
-               BuildableName = "FrontendAppKitTests.xctest"
-               BlueprintName = "FrontendAppKitTests"
+               BuildableName = "FrontendAppKitUnitTests.xctest"
+               BlueprintName = "FrontendAppKitUnitTests"
                ReferencedContainer = "container:idcard-scanner-ios.xcodeproj">
             </BuildableReference>
          </TestableReference>

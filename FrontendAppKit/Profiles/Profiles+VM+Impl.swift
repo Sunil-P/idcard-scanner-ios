@@ -5,6 +5,7 @@
 //  Created by Subhrajyoti Patra on 10/7/22.
 //
 
+import RxCocoa
 import Swinject
 
 extension Profiles.VM {
@@ -37,6 +38,15 @@ extension Profiles.VM {
             self.model = Model.Factory.create(with: resolver)
 
             print("Class init")
+        }
+
+        // MARK: Interface
+
+        var profiles: Driver<[Model.Profile]> {
+
+            model.profiles
+
+                .asDriver(onErrorDriveWith: .never())
         }
 
         var addNewProfileVM: AddNewProfile.VM.Interface {

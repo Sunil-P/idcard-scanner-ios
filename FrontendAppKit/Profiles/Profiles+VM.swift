@@ -5,7 +5,11 @@
 //  Created by Subhrajyoti Patra on 10/7/22.
 //
 
+import RxCocoa
+
 protocol Profiles_VM_Interface {
+
+    var profiles: Driver<[Model.Profile]> { get }
 
     var addNewProfileVM: AddNewProfile.VM.Interface { get }
 

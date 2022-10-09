@@ -49,17 +49,15 @@ extension Model {
                 .asObservable()
         }
 
-        func parseIdCard(image: UIImage) -> Single<UIImage> {
+        func process(image: UIImage, type: Model.ImageType) -> Single<(UIImage, String)> {
 
             .create { [disposeBag, visionManager] single in
 
-                visionManager.processIdCard(image: image)
+                visionManager.process(image: image, type: type.imageAnalyticsType)
 
                     .subscribe(onSuccess: { result in
 
-                        print(result.1)
-
-                        single(.success(result.0))
+                        single(.success(result))
 
                     }, onFailure: { error in
 
@@ -77,35 +75,14 @@ extension Model {
 
                 var profiles = profilesRelay.value
 
-                guard !profiles.keys.contains(profile.id) else {
+                guard !profiles.keys.contains(profile.email) else {
 
                     print("Error: Profile already exists.")
                     completable(.error(Model.Error.cannotCreateProfileExists))
                     return Disposables.create {}
                 }
 
-                profiles[profile.id] = profile
-                profilesRelay.accept(profiles)
-
-                completable(.completed)
-                return Disposables.create {}
-            }
-        }
-
-        func deleteProfile(id: UUID) -> Completable {
-
-            .create { [profilesRelay] completable in
-
-                var profiles = profilesRelay.value
-
-                guard profiles.keys.contains(id) else {
-
-                    print("Error: Profile doesnt exist, cannot delete.")
-                    completable(.error(Model.Error.cannotDeleteProfileDoesntExist))
-                    return Disposables.create {}
-                }
-
-                profiles.removeValue(forKey: id)
+                profiles[profile.email] = profile
                 profilesRelay.accept(profiles)
 
                 completable(.completed)
@@ -117,7 +94,7 @@ extension Model {
 
         private let disposeBag = DisposeBag()
         private let visionManager: ImageAnalytics.VisionManager.Interface
-        private let profilesRelay: BehaviorRelay<[UUID: Model.Profile]>
+        private let profilesRelay: BehaviorRelay<[String: Model.Profile]>
     }
 
 } // Model
